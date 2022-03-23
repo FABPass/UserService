@@ -1,9 +1,19 @@
 package com.example.userservice.user;
 
+import com.example.userservice.mfa.Mfa;
+import com.example.userservice.password.Password;
+
 import javax.persistence.*;
 
+//@Entity(name = "Student") / navedemo kako ce se tabela zvati, ako ne navedemo onda je isto ime kao ime klase
 @Entity
-@Table
+@Table(
+        name = "user",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "user_email_unique", columnNames = "email"),
+                @UniqueConstraint(name = "user_phone_unique", columnNames = "phone")
+        }
+)
 
 public class User {
 
@@ -18,34 +28,69 @@ public class User {
             strategy = GenerationType.SEQUENCE,
             generator = "user_sequence"
     )
+
+    @Column(name = "id", updatable = false)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "surname", nullable = false)
     private String surname;
+
+    @Column(name = "email", nullable = false)
     private String email;
+
+    @Column(name = "phone", nullable = false)
     private String phone;
-    private Long passwordId;
     //@Transient  --> na ovaj nacin kazemo da ne kreira u bazi kolonu test
     //private Integer test
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "passwordId")
+    private Password password;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "mfaId")
+    private Mfa mfa;
     
     public User() {
     }
 
-    public User(Long id, String name, String surname, String email, String phone, Long passwordId) {
+    public User(Long id, String name, String surname, String email, String phone, Password password, Mfa mfa) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.phone = phone;
-        this.passwordId = passwordId;
+        this.password = password;
+        this.mfa = mfa;
     }
 
-    public User(String name, String surname, String email, String phone, Long passwordId) {
+    public User(String name, String surname, String email, String phone, Password password, Mfa mfa) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.phone = phone;
-        this.passwordId = passwordId;
+        this.password = password;
+        this.mfa = mfa;
     }
+
+    public User(Long id, String name, String surname, String email, String phone) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.phone = phone;
+    }
+
+    public User(String name, String surname, String email, String phone) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.phone = phone;
+    }
+
 
     public Long getId() {
         return id;
@@ -87,12 +132,20 @@ public class User {
         this.phone = phone;
     }
 
-    public Long getPasswordId() {
-        return passwordId;
+    public Password getPassword() {
+        return password;
     }
 
-    public void setPasswordId(Long passwordId) {
-        this.passwordId = passwordId;
+    public void setPassword(Password password) {
+        this.password = password;
+    }
+
+    public Mfa getMfa() {
+        return mfa;
+    }
+
+    public void setMfa(Mfa mfa) {
+        this.mfa = mfa;
     }
 
     @Override
@@ -103,7 +156,6 @@ public class User {
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", passwordId=" + passwordId +
                 '}';
     }
 }
