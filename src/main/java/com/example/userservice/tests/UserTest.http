@@ -1,0 +1,179 @@
+//  Get all //
+
+GET http://localhost:8080/user/users
+Accept: application/json
+
+> {%
+client.test("Status kod je 200", function() {
+    client.assert(response.status === 200, "Status kod nije 200, već je " + response.status);
+ });
+
+ client.test("Odgovor content-type je json", function() {
+    var type = response.contentType.mimeType;
+    client.assert(type === "application/json", "Očekivani format 'application/json' ali je odgovor '" + type + "'");
+ });
+
+ client.test("Da li je vraćen niz", function() {
+   var type = response.body;
+   client.assert(response.body instanceof Array, "Status kod nije 200, već je " + (typeof response.body) );
+ });
+%}
+
+###
+
+//  Get by email //
+
+GET http://localhost:8080/user/email?email=bselimovic1@etf.unsa.ba
+Accept: application/json
+
+> {%
+
+ client.test("Status kod je 200", function() {
+    client.assert(response.status === 200, "Status kod nije 200, već je " + response.status);
+ });
+
+ client.test("Naziv usera sa emailom", function() {
+    client.assert(response.body["name"] === "Belmin", "Naziv usera je " + response.body["name"]);
+ });
+
+
+ %}
+
+###
+
+GET http://localhost:8080/user/email?email=bselimovic1@etf.unsa.baa
+Accept: application/json
+
+> {%
+client.test("Unos nepostojećeg email-a", function() {
+    client.assert(response.body.message === "There is no user registered with email: bselimovic1@etf.unsa.baa");
+ });
+
+%}
+
+###
+
+//  Get by ID //
+
+GET http://localhost:8080/user/id?id=1
+Accept: application/json
+
+> {%
+
+ client.test("Status kod je 200", function() {
+    client.assert(response.status === 200, "Status kod nije 200, već je " + response.status);
+ });
+
+ client.test("Naziv usera sa emailom", function() {
+    client.assert(response.body["name"] === "Belmin", "Naziv usera je " + response.body["name"]);
+ });
+
+
+ %}
+
+###
+
+GET http://localhost:8080/user/id?id=5
+Accept: application/json
+
+> {%
+client.test("Unos nepostojećeg email-a", function() {
+    client.assert(response.body.message === "There is no user with id: 5");
+ });
+
+%}
+
+###
+
+//  Add new user //
+
+POST http://localhost:8080/user/create
+Content-Type: application/json
+
+{
+  "name":"Test",
+  "surname":"Testic",
+  "email":"tesit@mail.com",
+  "phone":"123",
+  "password":{
+    "password":"testpw"
+  }
+}
+
+> {%
+ client.test("Status kod je 200", function() {
+    client.assert(response.status === 200, "Status kod nije 200, već je " + response.status);
+ });
+
+ client.test("Naziv usera koji je dodat", function() {
+    client.assert(response.body["name"] === "Test", "Naziv usera je " + response.body["name"]);
+ });
+
+ %}
+
+###
+
+//  Update user //
+
+PUT http://localhost:8080/user/update
+Content-Type: application/json
+
+{
+  "id":"2",
+  "name":"NekoNovoIme",
+  "surname":"Testicaa",
+  "email":"fmusic2@etf.unsa.ba",
+  "phone":"12345"
+}
+
+> {%
+ client.test("Status kod je 200", function() {
+    client.assert(response.status === 200, "Status kod nije 200, već je " + response.status);
+ });
+
+ client.test("Naziv usera koji je dodat", function() {
+    client.assert(response.body["name"] === "NekoNovoIme", "Naziv usera je " + response.body["name"]);
+ });
+
+ %}
+
+###
+
+//  Delete user by email //
+DELETE http://localhost:8080/user/delete/email?email=fmusic2@etf.unsa.ba
+
+> {%
+ client.test("Status kod je 200", function() {
+    client.assert(response.status === 200, "Status kod nije 200, već je " + response.status);
+ });
+ %}
+
+###
+
+DELETE http://localhost:8080/user/delete/email?email=fmusic2@etf.unsa.baa
+
+> {%
+client.test("Status kod je 400", function() {
+    client.assert(response.status === 400, "Status kod nije 400, već je " + response.status);
+ });
+
+client.test("Brisanje usera sa nepostojećim email-om", function() {
+    client.assert(response.body.message === "There is no user registered with email: fmusic2@etf.unsa.baa");
+ });
+ %}
+
+###
+
+//  Delete user by id //
+
+DELETE http://localhost:8080/user/delete/id?id=5
+
+> {%
+client.test("Status kod je 400", function() {
+    client.assert(response.status === 400, "Status kod nije 400, već je " + response.status);
+ });
+
+client.test("Brisanje usera sa nepostojećim id-om", function() {
+    client.assert(response.body.message === "There is no user with id: 5");
+ });
+ %}

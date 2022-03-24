@@ -31,6 +31,7 @@ public class PasswordService {
     }
 
     public Password updatePassword(Password password) {
+        if(password.getPassword().isEmpty()) throw new ApiRequestException("Password is empty!", HttpStatus.BAD_REQUEST);
         Optional<Password> pass = passwordRepository.findPasswordById(password.getId())
                 .map(pw ->{
                     pw.setPassword(password.getPassword());

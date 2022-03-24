@@ -32,6 +32,7 @@ public class MfaService {
 
 
     public Mfa updateMfa(Mfa mfa) {
+        if(!mfa.getType().equals("None") && !mfa.getType().equals("Application") && !mfa.getType().equals("None")) throw new ApiRequestException("Type is invalid. Valid types : None, Application, Phone", HttpStatus.BAD_REQUEST);
         Optional<Mfa> mf = mfaRepository.findMfaById(mfa.getId())
                 .map(m -> {
                     m.setType(mfa.getType());
