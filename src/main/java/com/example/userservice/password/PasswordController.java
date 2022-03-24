@@ -1,14 +1,13 @@
 package com.example.userservice.password;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "api/password")
+@RequestMapping(path = "password")
 public class PasswordController {
 
     private final PasswordService passwordService;
@@ -18,8 +17,19 @@ public class PasswordController {
         this.passwordService = passwordService;
     }
 
-    @GetMapping
+    @GetMapping(path = "/passwords")
     public List<Password> getPassword(){
         return passwordService.getPasswords();
     }
+
+    @GetMapping(path = "/id")
+    public Password getPasswordById(@RequestParam(value="id") Long id){
+        return passwordService.getPasswordById(id);
+    }
+
+    @PutMapping(path = "/update")
+    public Password updatePassword(@RequestBody Password password){
+        return passwordService.updatePassword(password);
+    }
+
 }

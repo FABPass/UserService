@@ -148,6 +148,14 @@ public class User {
         this.mfa = mfa;
     }
 
+    public Long getPasswordId(){
+        return password.getId();
+    }
+
+    public Long getMfaId(){
+        return mfa.getId();
+    }
+
     @Override
     public String toString() {
         return "User{" +
