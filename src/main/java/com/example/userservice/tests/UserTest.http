@@ -1,6 +1,6 @@
 //  Get all //
 
-GET http://localhost:8080/user/users
+GET http://localhost:8080/user/all
 Accept: application/json
 
 > {%
@@ -23,7 +23,7 @@ client.test("Status kod je 200", function() {
 
 //  Get by email //
 
-GET http://localhost:8080/user/email?email=bselimovic1@etf.unsa.ba
+GET http://localhost:8080/user?email=bselimovic1@etf.unsa.ba
 Accept: application/json
 
 > {%
@@ -41,7 +41,7 @@ Accept: application/json
 
 ###
 
-GET http://localhost:8080/user/email?email=bselimovic1@etf.unsa.baa
+GET http://localhost:8080/user?email=bselimovic1@etf.unsa.baa
 Accept: application/json
 
 > {%
@@ -55,7 +55,7 @@ client.test("Unos nepostojećeg email-a", function() {
 
 //  Get by ID //
 
-GET http://localhost:8080/user/id?id=1
+GET http://localhost:8080/user?id=1
 Accept: application/json
 
 > {%
@@ -73,7 +73,7 @@ Accept: application/json
 
 ###
 
-GET http://localhost:8080/user/id?id=5
+GET http://localhost:8080/user?id=5
 Accept: application/json
 
 > {%
@@ -87,7 +87,7 @@ client.test("Unos nepostojećeg email-a", function() {
 
 //  Add new user //
 
-POST http://localhost:8080/user/create
+POST http://localhost:8080/user
 Content-Type: application/json
 
 {
@@ -115,7 +115,7 @@ Content-Type: application/json
 
 //  Update user //
 
-PUT http://localhost:8080/user/update
+PUT http://localhost:8080/user
 Content-Type: application/json
 
 {
@@ -140,7 +140,7 @@ Content-Type: application/json
 ###
 
 //  Delete user by email //
-DELETE http://localhost:8080/user/delete/email?email=fmusic2@etf.unsa.ba
+DELETE http://localhost:8080/user?email=fmusic2@etf.unsa.ba
 
 > {%
  client.test("Status kod je 200", function() {
@@ -150,7 +150,7 @@ DELETE http://localhost:8080/user/delete/email?email=fmusic2@etf.unsa.ba
 
 ###
 
-DELETE http://localhost:8080/user/delete/email?email=fmusic2@etf.unsa.baa
+DELETE http://localhost:8080/user?email=fmusic2@etf.unsa.baa
 
 > {%
 client.test("Status kod je 400", function() {
@@ -166,7 +166,7 @@ client.test("Brisanje usera sa nepostojećim email-om", function() {
 
 //  Delete user by id //
 
-DELETE http://localhost:8080/user/delete/id?id=5
+DELETE http://localhost:8080/user?id=5
 
 > {%
 client.test("Status kod je 400", function() {

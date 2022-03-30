@@ -17,37 +17,41 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(path = "/users")
+    @GetMapping(path = "/all")
     public List<User> getUsers(){
         return userService.getUsers();
     }
 
-    @GetMapping(path = "/email")
+    @RequestMapping(params = "email", method = RequestMethod.GET)
+    @GetMapping()
     public User getUserByEmail(@RequestParam(value = "email") String email){
         return userService.getUserByEmail(email);
     }
 
-    @GetMapping(path = "/id")
+    @RequestMapping(params = "id", method = RequestMethod.GET)
+    @GetMapping()
     public User getUserByEmail(@RequestParam(value = "id") Long id){
         return userService.getUserById(id);
     }
 
-    @PostMapping(path = "/create")
+    @PostMapping()
     public User createNewUser(@RequestBody User user){
         return userService.createNewUser(user, user.getPassword().getPassword());
     }
 
-    @PutMapping(path = "/update")
+    @PutMapping()
     public User updateUser(@RequestBody User user){
         return userService.updateUser(user);
     }
 
-    @DeleteMapping(path = "/delete/email")
+    @RequestMapping(params = "email", method = RequestMethod.DELETE)
+    @DeleteMapping()
     public void deleteUserById(@RequestParam(value = "email") String email){
         userService.deleteUserByEmail(email);
     }
 
-    @DeleteMapping(path = "/delete/id")
+    @RequestMapping(params = "id", method = RequestMethod.DELETE)
+    @DeleteMapping()
     public void deleteUserById(@RequestParam(value = "id") Long id){
         userService.deleteUserById(id);
     }

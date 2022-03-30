@@ -16,17 +16,17 @@ public class MfaController {
         this.mfaService = mfaService;
     }
 
-    @GetMapping(path = "/mfas")
+    @GetMapping(path = "/all")
     public List<Mfa> getMfas(){
         return mfaService.getMfas();
     }
 
-    @GetMapping(path = "/id")
+    @GetMapping()
     public Mfa getMfaById(@RequestParam(value = "id") Long id){
         return mfaService.getMfaById(id);
     }
 
-    @PutMapping(path = "/update")
+    @PutMapping()
     public Mfa updateMfa(@RequestBody Mfa mfa){
         return mfaService.updateMfa(mfa);
     }

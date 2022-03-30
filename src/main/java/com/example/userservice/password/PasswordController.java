@@ -16,17 +16,17 @@ public class PasswordController {
         this.passwordService = passwordService;
     }
 
-    @GetMapping(path = "/passwords")
+    @GetMapping(path = "/all")
     public List<Password> getPassword(){
         return passwordService.getPasswords();
     }
 
-    @GetMapping(path = "/id")
+    @GetMapping()
     public Password getPasswordById(@RequestParam(value="id") Long id){
         return passwordService.getPasswordById(id);
     }
 
-    @PutMapping(path = "/update")
+    @PutMapping()
     public Password updatePassword(@RequestBody Password password){
         return passwordService.updatePassword(password);
     }
