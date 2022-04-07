@@ -2,6 +2,7 @@ package com.example.userservice.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,8 +33,14 @@ public class UserController {
 
     @RequestMapping(params = "id", method = RequestMethod.GET)
     @GetMapping()
-    public User getUserByEmail(@RequestParam(value = "id") Long id){
+    public User getUserById(@RequestParam(value = "id") Long id){
         return userService.getUserById(id);
+    }
+
+    @RequestMapping(params = "passwordId", method = RequestMethod.GET)
+    @GetMapping
+    public ResponseEntity<Object> getUserEmailByPasswordId(@RequestParam(value = "passwordId") Long passwordId){
+        return userService.getUserEmailByPasswordId(passwordId);
     }
 
     @PostMapping()
@@ -57,5 +64,6 @@ public class UserController {
     public void deleteUserById(@RequestParam(value = "id") Long id){
         userService.deleteUserById(id);
     }
+
 
 }

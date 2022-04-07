@@ -1,6 +1,6 @@
 //  Get all //
 
-GET http://localhost:8080/mfa/all
+GET http://localhost:8081/mfa/all
 Accept: application/json
 
 > {%
@@ -23,7 +23,7 @@ client.test("Status kod je 200", function() {
 
 //  Get by ID //
 
-GET http://localhost:8080/mfa?id=1
+GET http://localhost:8081/mfa?id=1
 Accept: application/json
 
 > {%
@@ -38,7 +38,7 @@ Accept: application/json
 ###
 
 
-GET http://localhost:8080/mfa?id=5
+GET http://localhost:8081/mfa?id=5
 Accept: application/json
 
 > {%
@@ -58,7 +58,7 @@ Accept: application/json
 
 
 // Update password //
-PUT http://localhost:8080/mfa
+PUT http://localhost:8081/mfa
 Content-Type: application/json
 
 {
