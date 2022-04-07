@@ -85,6 +85,43 @@ client.test("Unos nepostojećeg email-a", function() {
 
 ###
 
+// GET user email by password id
+
+GET http://localhost:8081/user?passwordId=1
+Accept: application/json
+
+> {%
+
+ client.test("Status kod je 200", function() {
+    client.assert(response.status === 200, "Status kod nije 200, već je " + response.status);
+ });
+
+ client.test("Naziv usera sa emailom", function() {
+    client.assert(response.body["email"] === "bselimovic1@etf.unsa.ba", "Email je " + response.body["email"]);
+ });
+
+
+ %}
+
+###
+
+GET http://localhost:8081/user?passwordId=5
+Accept: application/json
+
+> {%
+
+client.test("Status kod je 400", function() {
+    client.assert(response.status === 400, "Status kod nije 400, već je " + response.status);
+ });
+
+client.test("Unos nepostojećeg passwordId-a", function() {
+    client.assert(response.body.message === "There is no user with passwordId: 5");
+ });
+
+%}
+
+###
+
 //  Add new user //
 
 POST http://localhost:8081/user
