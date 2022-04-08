@@ -103,7 +103,6 @@ public class PasswordService {
         for(String email:emails){
             try{
                 ResponseEntity<String> notify = restTemplate.getForEntity("http://notification-service/passwordAdvices/expiration?email="+email+"&message="+msg, String.class);
-                JsonNode root = mapper.readTree(notify.getBody());
                 HashMap<String,String> json = new HashMap<>();
                 json.put("email", email);
                 json.put("StatusCodeValue", String.valueOf(notify.getStatusCodeValue()));
