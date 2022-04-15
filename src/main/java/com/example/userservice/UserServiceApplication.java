@@ -30,10 +30,10 @@ public class UserServiceApplication {
         SpringApplication.run(UserServiceApplication.class, args);
     }
 
-    @GetMapping
-    public String hello(){
-        return message;
-    }
+//    @GetMapping
+//    public String hello(){
+//        return message;
+//    }
 
 
 

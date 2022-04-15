@@ -15,6 +15,7 @@
     <description>UserService</description>
     <properties>
         <java.version>11</java.version>
+        <spring-cloud.version>2021.0.0</spring-cloud.version>
     </properties>
     <dependencies>
         <dependency>
@@ -68,6 +69,23 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>net.devh</groupId>
+            <artifactId>grpc-client-spring-boot-starter</artifactId>
+            <version>2.12.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nwt.fabpass.systemevents</groupId>
+            <artifactId>system-events</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>30.1-jre</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
