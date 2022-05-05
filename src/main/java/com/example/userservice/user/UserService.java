@@ -7,21 +7,35 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+//    @Autowired
+//    public UserService(UserRepository userRepository) {
+//        this.userRepository = userRepository;
+//    }
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> getUsers() {
@@ -44,6 +58,7 @@ public class UserService {
         return userById.get();
     }
 
+
     public ResponseEntity<Object> getUserEmailByPasswordId(Long passwordId) {
         Optional<User> userByPasswordId = userRepository.findUserByPasswordId(passwordId);
         if(!userByPasswordId.isPresent()){
@@ -58,7 +73,7 @@ public class UserService {
         addOrUpdateUserValidation(user);
         if(password.isEmpty()) throw new ApiRequestException("Password is empty!", HttpStatus.BAD_REQUEST);
 
-        Password pw = new Password(password, LocalDateTime.now());
+        Password pw = new Password(passwordEncoder.encode(password), LocalDateTime.now());
         Mfa mfa = new Mfa("None","",false);
         user.setPassword(pw);
         user.setMfa(mfa);
@@ -110,4 +125,15 @@ public class UserService {
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findUserByEmail(email);
+        if(!user.isPresent()){
+            throw new UsernameNotFoundException("User not found in the database");
+        }
+
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword().getPassword(),authorities);
+    }
 }
