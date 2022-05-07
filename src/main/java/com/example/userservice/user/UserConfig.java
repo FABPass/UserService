@@ -2,15 +2,24 @@ package com.example.userservice.user;
 
 import com.example.userservice.mfa.Mfa;
 import com.example.userservice.password.Password;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Configuration
 public class UserConfig {
+
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserConfig(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Bean
     CommandLineRunner userCommandLineRunner(UserRepository userRepository){
@@ -21,7 +30,7 @@ public class UserConfig {
                     "bselimovic1@etf.unsa.ba",
                     "555-555/221",
                     new Password(
-                            "sifra123",
+                            passwordEncoder.encode("sifra123"),
                             LocalDateTime.now()
                     ),
                     new Mfa(
@@ -36,7 +45,7 @@ public class UserConfig {
                     "fmusic2@etf.unsa.ba",
                     "444-444/221",
                     new Password(
-                            "sifra321",
+                            passwordEncoder.encode("sifra321"),
                             LocalDateTime.now()
                     ),
                     new Mfa(
@@ -51,7 +60,7 @@ public class UserConfig {
                     "apasic2@etf.unsa.ba",
                     "333-333/221",
                     new Password(
-                            "sifra111",
+                            passwordEncoder.encode("sifra111"),
                             LocalDateTime.now()
                     ),
                     new Mfa(
