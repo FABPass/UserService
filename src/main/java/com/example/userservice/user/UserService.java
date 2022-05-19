@@ -1,10 +1,16 @@
 package com.example.userservice.user;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.userservice.exception.ApiRequestException;
 import com.example.userservice.mfa.Mfa;
 import com.example.userservice.password.Password;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,11 +21,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -135,5 +142,44 @@ public class UserService implements UserDetailsService {
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword().getPassword(),authorities);
+    }
+
+
+    public ResponseEntity<Object> refreshToken(HttpHeaders headers) {
+        String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+            try {
+                String refresh_token = authorizationHeader.substring("Bearer ".length());
+                Algorithm algorithm = Algorithm.HMAC256("promijeniSecretToken12312213sadadse12312312312312312b12312");
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = verifier.verify(refresh_token);
+                String email = decodedJWT.getSubject();
+                Optional<User> user = userRepository.findUserByEmail(email);
+
+                if(!user.isPresent()) throw new UsernameNotFoundException("User not found in the database");
+
+                List<String> authorities = new ArrayList<>();
+                authorities.add("ROLE_USER");
+
+                String access_token = JWT.create()
+                        .withSubject(user.get().getEmail())
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 10*60*1000))
+                        .withIssuer(headers.getFirst(HttpHeaders.HOST))
+                        .withClaim("roles", authorities)
+                        .sign(algorithm);
+
+                Map<String, String> tokens = new HashMap<>();
+                tokens.put("access_token",access_token);
+                tokens.put("refresh_token",refresh_token);
+                return new ResponseEntity<>(tokens, HttpStatus.OK);
+
+            }catch(Exception exception){
+                HashMap<String, String> hash = new HashMap<>();
+                hash.put("error",exception.getMessage());
+                return new ResponseEntity<>(hash, FORBIDDEN);
+            }
+        }else{
+            throw new RuntimeException("Refresh token is missing");
+        }
     }
 }
