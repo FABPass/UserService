@@ -7,8 +7,11 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.userservice.exception.ApiRequestException;
 import com.example.userservice.mfa.Mfa;
 import com.example.userservice.password.Password;
+import com.example.userservice.rabbitmq.Config;
+import com.example.userservice.rabbitmq.Event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,6 +36,9 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
 //    @Autowired
 //    public UserService(UserRepository userRepository) {
@@ -85,7 +91,10 @@ public class UserService implements UserDetailsService {
         user.setPassword(pw);
         user.setMfa(mfa);
         try{
-            return userRepository.save(user);
+            User save = userRepository.save(user);
+            Event message = new Event(save.getEmail(), "Welcome "+save.getName()+" "+save.getSurname()+".\n"+"Successfully registred. You can use FABPass now");
+            rabbitTemplate.convertAndSend(Config.USER_SERVICE_EXCHANGE, Config.USER_SERVICE_RK, message);
+            return save;
         }
         catch (Exception e){
             throw new ApiRequestException("You can not add user with existing email or phone", HttpStatus.BAD_REQUEST);
