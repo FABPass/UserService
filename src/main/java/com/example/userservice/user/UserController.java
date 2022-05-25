@@ -73,5 +73,14 @@ public class UserController {
         return userService.refreshToken(headers);
     }
 
+    @PostMapping(path = "/forgotPassword")
+    public ResponseEntity<Object> sendForgotPasswordEmail(@RequestParam(value = "email") String email){
+        return userService.sendForgotPasswordEmail(email);
+    }
+
+    @PutMapping(path = "/changePassword/{token}")
+    public ResponseEntity<Object> changePassword(@PathVariable String token, @RequestBody() String password){
+        return userService.changePassword(token, password);
+    }
 
 }
