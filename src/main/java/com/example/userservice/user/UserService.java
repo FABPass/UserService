@@ -199,10 +199,10 @@ public class UserService implements UserDetailsService {
         try{
             Optional<User> user = userRepository.findUserByEmail(email);
             if(!user.isPresent()) throw new ApiRequestException("User not found", NOT_FOUND);
-            String token = createToken(user.get(),5);
+            String token = createToken(user.get(),15);
 
             String msg = "If you want to reset your password click on following link :  http://localhost:3000/changePassword/"+token+"\n";
-            msg += "You have 5 minutes to reset password";
+            msg += "You have 15 minutes to reset password";
             ResponseEntity<String> sendEmail = restTemplate.getForEntity("http://notification-service/passwordAdvices/expiration?email="+email+"&message="+msg, String.class);
 
 

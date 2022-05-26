@@ -79,8 +79,9 @@ public class UserController {
     }
 
     @PutMapping(path = "/changePassword/{token}")
-    public ResponseEntity<Object> changePassword(@PathVariable String token, @RequestBody() String password){
-        return userService.changePassword(token, password);
+    public ResponseEntity<Object> changePassword(@PathVariable String token, @RequestBody() Map<String, String> password){
+        String pw = password.get("password");
+        return userService.changePassword(token, pw);
     }
 
 }
