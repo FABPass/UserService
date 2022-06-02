@@ -18,7 +18,7 @@ public class Config {
     @Bean
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        connectionFactory.setHost("localhost");
+        connectionFactory.setHost("rabbitmq");
         connectionFactory.setUsername("guest");
         connectionFactory.setPassword("guest");
         connectionFactory.setPort(5672);
