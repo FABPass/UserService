@@ -55,6 +55,11 @@ public class UserController {
         return userService.updateUser(user);
     }
 
+    @PutMapping("/update")
+    public User updateUserCheckPw(@RequestBody User user, @RequestParam(value = "pw") String pw){
+        return userService.updateUserCheckPw(user, pw);
+    }
+
     @RequestMapping(params = "email", method = RequestMethod.DELETE)
     @DeleteMapping()
     public void deleteUserById(@RequestParam(value = "email") String email){

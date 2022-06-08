@@ -121,6 +121,30 @@ public class UserService implements UserDetailsService {
 
     }
 
+    public User updateUserCheckPw(User user, String pw) {
+        addOrUpdateUserValidation(user);
+        Optional<User> found = userRepository.findUserById(user.getId());
+        if(found.isPresent()) {
+            if(passwordEncoder.matches(pw, found.get().getPassword().getPassword())){
+                found.get().setName(user.getName());
+                found.get().setSurname(user.getSurname());
+                found.get().setEmail(user.getEmail());
+                found.get().setPhone(user.getPhone());
+                Password setpw = user.getPassword();
+                setpw.setPassword(passwordEncoder.encode(user.getPassword().getPassword()));
+                found.get().setPassword(setpw);
+                try {
+                    return userRepository.save(found.get());
+                }catch (Exception e){
+                    throw new ApiRequestException("Phone or email is already in use: "+ user.getId(), BAD_REQUEST);
+                }
+
+            }
+            else throw new ApiRequestException("Incorrect password", BAD_REQUEST);
+        }
+        else throw new ApiRequestException("There is no user with id: "+ user.getId(), BAD_REQUEST);
+    }
+
 
     public void deleteUserById(Long id) {
         Optional<User> userById = userRepository.findUserById(id);
@@ -261,4 +285,6 @@ public class UserService implements UserDetailsService {
         }
 
     }
+
+
 }
