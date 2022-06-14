@@ -99,7 +99,7 @@
         <dependency>
             <groupId>com.nwt.fabpass.systemevents</groupId>
             <artifactId>system-events</artifactId>
-            <version>0.0.3-SNAPSHOT</version>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
