@@ -199,7 +199,7 @@ public class UserService implements UserDetailsService {
 
                 String access_token = JWT.create()
                         .withSubject(user.get().getEmail())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10*60*1000))
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 60*60*1000))
                         .withIssuer(headers.getFirst(HttpHeaders.HOST))
                         .withClaim("roles", authorities)
                         .sign(algorithm);
